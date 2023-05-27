@@ -48,5 +48,11 @@ namespace ElasticScaleDemo.Dao
             logger.Info($"Mapped range {mappingForNewShard.Value} to shard {shard.Location.Database}");
             return shard;
         }
+
+        public static Shard CreateListShard(ListShardMap<int> listShardMap)
+        {
+            // TODO : return the list shard
+            return null;
+        }
     }
 }

@@ -1,11 +1,5 @@
-﻿using ElasticScaleDemo.Helper;
-using log4net;
+﻿using log4net;
 using Microsoft.Azure.SqlDatabase.ElasticScale.ShardManagement;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ElasticScaleDemo.Dao
 {
@@ -27,6 +21,22 @@ namespace ElasticScaleDemo.Dao
                 shardMap = shardMapManager.CreateRangeShardMap<int>(shardMapName);
             }
             return shardMap;
+        }
+
+        public static ListShardMap<int> CreateOrGetListShardMap(ShardMapManager shardMapManager, string shardMapName)
+        {
+            ListShardMap<int> listShardMap;
+            bool shardMapExists = shardMapManager.TryGetListShardMap(shardMapName, out listShardMap);
+            if (shardMapExists)
+            {
+                logger.Info($"shardmap already exisits {shardMapName}");
+            }
+            else
+            {
+                logger.Info("shard map does not exists, now creating one");
+                listShardMap = shardMapManager.CreateListShardMap<int>(shardMapName);
+            }
+            return listShardMap;
         }
     }
 }

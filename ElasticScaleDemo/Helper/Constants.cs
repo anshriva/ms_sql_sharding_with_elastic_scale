@@ -4,13 +4,17 @@ namespace ElasticScaleDemo.Helper
 {
     internal class Constants
     {
-        public const string serverName = "ANUBHAV";
+        public const string serverName = "localhost\\SQLEXPRESS";
 
-        public const string ShardMapManagerDatabaseName = "shard_map";
+        public const string RangeShardMapManagerDatabaseName = "range_shard_map";
+
+        public const string ListShardMapManagerDatabaseName = "list_shard_map";
 
         public const string masterDbName = "master";
 
-        public const string ShardMapName = "StudentIdShardMap";
+        public const string RangeShardMapName = "range_studentIdShardMap";
+
+        public const string ListShardMapName = "list_studentIdShardMap";
 
         public const string ShardNameFormat = "student_{0}";
 

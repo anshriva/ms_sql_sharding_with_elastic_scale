@@ -14,9 +14,24 @@ namespace ElasticScaleDemo
         static void Main(string[] args)
         {
             InitializeLogger();
-            DatabaseManagement.CreateDatabaseIfDoesNotExists(Constants.ShardMapManagerDatabaseName);
-            ShardMapManager shardMapManager = ShardMapManagerManagement.CreateShardMapManagerIfDoesNotExists();
-            RangeShardMap<int> rangeShardMap = ShardMapManagement.CreateOrGetRangeShardMap(shardMapManager, Constants.ShardMapName);
+            DemoRangeShards();
+        }
+
+
+        private static void DemoListShards()
+        {
+            DatabaseManagement.CreateDatabaseIfDoesNotExists(Constants.RangeShardMapManagerDatabaseName);
+            ShardMapManager shardMapManager = ShardMapManagerManagement.CreateShardMapManagerIfDoesNotExists(Constants.ListShardMapManagerDatabaseName);
+            ListShardMap<int> listShardMap = ShardMapManagement.CreateOrGetListShardMap(shardMapManager, Constants.ListShardMapName);
+            SchemaManagement.CreateSchemaInfo(shardMapManager, listShardMap.Name);
+
+        }
+
+        private static void DemoRangeShards()
+        {
+            DatabaseManagement.CreateDatabaseIfDoesNotExists(Constants.RangeShardMapManagerDatabaseName);
+            ShardMapManager shardMapManager = ShardMapManagerManagement.CreateShardMapManagerIfDoesNotExists(Constants.RangeShardMapManagerDatabaseName);
+            RangeShardMap<int> rangeShardMap = ShardMapManagement.CreateOrGetRangeShardMap(shardMapManager, Constants.RangeShardMapName);
             SchemaManagement.CreateSchemaInfo(shardMapManager, rangeShardMap.Name);
             ShardManagement.CreateRangeShard(rangeShardMap, new Range<int>(0, 10));
             ShardManagement.CreateRangeShard(rangeShardMap, new Range<int>(10, 20));

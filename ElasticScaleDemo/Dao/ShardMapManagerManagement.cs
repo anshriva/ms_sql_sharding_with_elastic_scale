@@ -8,10 +8,10 @@ namespace ElasticScaleDemo.Dao
     {
         static ILog logger = LogManager.GetLogger(typeof(ShardMapManagerManagement));
 
-        public static ShardMapManager CreateShardMapManagerIfDoesNotExists()
+        public static ShardMapManager CreateShardMapManagerIfDoesNotExists(string shardMapName)
         {
             // Create shardMap Manager in the shard map manager database
-            string shardMapManagerConnectionString = SqlUtils.GetConnectionString(Constants.serverName, Constants.ShardMapManagerDatabaseName);
+            string shardMapManagerConnectionString = SqlUtils.GetConnectionString(Constants.serverName, shardMapName);
             bool shardMapManagerExists = ShardMapManagerFactory.TryGetSqlShardMapManager(
                 shardMapManagerConnectionString,
             ShardMapManagerLoadPolicy.Lazy,

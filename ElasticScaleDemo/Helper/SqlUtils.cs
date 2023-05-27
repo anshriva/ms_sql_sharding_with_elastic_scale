@@ -81,8 +81,8 @@ namespace ElasticScaleDemo.Helper
             using (TextReader tr = new StreamReader(scriptFile))
             {
                 StringBuilder sb = new StringBuilder();
-                string line;
-                while ((line = tr.ReadLine()) != null)
+                string? line;
+                while (( line = tr.ReadLine()) != null)
                 {
                     if (line == "GO")
                     {

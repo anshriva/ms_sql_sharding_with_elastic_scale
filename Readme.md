@@ -11,7 +11,7 @@ Each machine keeps a part of the database and that part is called as a shard.*
 #### Shard Map manager
 It is a database which keeps track that a perticualar record can be found in which database shard. Below is a simple diagram taken from [Microsoft documentation on database shards](https://learn.microsoft.com/en-us/azure/azure-sql/database/elastic-scale-shard-map-management?view=azuresql)
 
-![Shard mapping](./shard_map.png)
+![Shard mapping](./images/shard_map.png)
 
 Here, the idea is that we have a database table which contains the information that which of the shards contain the full information of a record. <br>
 
@@ -49,3 +49,16 @@ There is corresponsing Java implementation available as well. You can import the
 Here is microsoft doc on how to elastically scale your MS SQL database : [Microsoft Elastic scale](https://learn.microsoft.com/en-us/azure/azure-sql/database/elastic-scale-get-started?view=azuresql)
 You can also read about database sharding on ms sql on this microsoft documentation [Scaling out with Azure SQL Database
 ](https://learn.microsoft.com/en-us/azure/azure-sql/database/elastic-scale-introduction?view=azuresql)
+
+
+### How to run the code
+1. You must of dotnet 7 installed.
+2. Check the file:  [Constants.cs](ElasticScaleDemo/Helper/Constants.cs) and modify the value of server name. 
+3. It is meant to run on local, to you need to install ms sql server on local. 
+
+### Code explaination
+The [Program.cs](ElasticScaleDemo/Program.cs) contains two flows:  Range Shard and list shard. You can see there are two functions which are called on by one. You can comment one and un comment other if you wish to see the behavours.
+<br>
+Below are the databases created:
+ 
+![Databases](./images/databases.png)

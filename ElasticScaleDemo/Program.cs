@@ -1,4 +1,5 @@
 ﻿using ElasticScaleDemo.Helper;
+using ElasticScaleDemo.Dao;
 using log4net;
 using log4net.Config;
 using Microsoft.Azure.SqlDatabase.ElasticScale.ShardManagement;
@@ -13,12 +14,12 @@ namespace ElasticScaleDemo
         static void Main(string[] args)
         {
             InitializeLogger();
-            ShardAdministration.CreateDatabaseIfDoesNotExists(Constants.ShardMapManagerDatabaseName);
-            ShardMapManager shardMapManager = ShardAdministration.CreateShardMapManagerIfDoesNotExists();
-            RangeShardMap<int> rangeShardMap = ShardAdministration.CreateOrGetRangeShardMap(shardMapManager, Constants.ShardMapName);
-            ShardAdministration.CreateSchemaInfo(shardMapManager, rangeShardMap.Name);
-            ShardAdministration.CreateShard(rangeShardMap, new Range<int>(0, 10));
-            ShardAdministration.CreateShard(rangeShardMap, new Range<int>(10, 20));
+            DatabaseManagement.CreateDatabaseIfDoesNotExists(Constants.ShardMapManagerDatabaseName);
+            ShardMapManager shardMapManager = ShardMapManagerManagement.CreateShardMapManagerIfDoesNotExists();
+            RangeShardMap<int> rangeShardMap = ShardMapManagement.CreateOrGetRangeShardMap(shardMapManager, Constants.ShardMapName);
+            SchemaManagement.CreateSchemaInfo(shardMapManager, rangeShardMap.Name);
+            ShardManagement.CreateRangeShard(rangeShardMap, new Range<int>(0, 10));
+            ShardManagement.CreateRangeShard(rangeShardMap, new Range<int>(10, 20));
 
             Client.AddStudent(9, "Anubhav", rangeShardMap, SqlUtils.GetCredentialConnectionString());
             Client.PrintStudents(0, 20, rangeShardMap, SqlUtils.GetCredentialConnectionString());

@@ -72,9 +72,9 @@ namespace ElasticScaleDemo.Dao
             return shard;
         }
 
-        public static string CreateShardDb(ShardMap shardMap, string shardNameFormat)
+        public static string CreateShardDb(ShardMap shardMap, string shardNameFormat, int count)
         {
-            string ShardDatabaseName = string.Format(shardNameFormat, shardMap.GetShards().Count());
+            string ShardDatabaseName = string.Format(shardNameFormat, count);
             bool dbExists = DatabaseManagement.CreateDatabaseIfDoesNotExists(ShardDatabaseName);
             if (!dbExists)
             {

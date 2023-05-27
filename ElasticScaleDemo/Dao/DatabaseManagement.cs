@@ -7,7 +7,7 @@ namespace ElasticScaleDemo.Dao
     {
         static ILog logger = LogManager.GetLogger(typeof(DatabaseManagement));
 
-        public static void CreateDatabaseIfDoesNotExists(string databaseName)
+        public static bool CreateDatabaseIfDoesNotExists(string databaseName)
         {
             // Create shardMapManager database if it does not exisits
             bool dbExists = SqlUtils.DatabaseExists(Constants.serverName, databaseName);
@@ -17,6 +17,7 @@ namespace ElasticScaleDemo.Dao
                 logger.Info($"creating the database name = {databaseName}");
                 SqlUtils.CreateDatabase(Constants.serverName, databaseName);
             }
+            return dbExists;
         }
     }
 }

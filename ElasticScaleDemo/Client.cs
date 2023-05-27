@@ -1,13 +1,7 @@
 ﻿using log4net;
 using Microsoft.Azure.SqlDatabase.ElasticScale.Query;
 using Microsoft.Azure.SqlDatabase.ElasticScale.ShardManagement;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ElasticScaleDemo
 {
@@ -29,7 +23,7 @@ namespace ElasticScaleDemo
             }
         }
 
-        public static void PrintStudents(int startId, int endId, RangeShardMap<int> shardMap, string connectionString)
+        public static void PrintStudents(int startId, int endId, ShardMap shardMap, string connectionString)
         {
             using MultiShardConnection conn = new MultiShardConnection(shardMap.GetShards(), connectionString);
             using MultiShardCommand cmd = conn.CreateCommand();

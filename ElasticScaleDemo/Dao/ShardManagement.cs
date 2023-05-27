@@ -8,7 +8,7 @@ namespace ElasticScaleDemo.Dao
     {
         static ILog logger = LogManager.GetLogger(typeof(ShardManagement));
 
-        public static Shard CreateRangeShard(RangeShardMap<int> rangeShardMap, Range<int> rangeForNewShard)
+        public static Shard MapRangeToShard(RangeShardMap<int> rangeShardMap, Range<int> rangeForNewShard, string shardDbName)
         {
             int min = rangeForNewShard.Low;
             int max = rangeForNewShard.High;
@@ -29,11 +29,8 @@ namespace ElasticScaleDemo.Dao
                     return mapping.Shard;
                 }
             }
-
-            string ShardDatabaseName = string.Format(Constants.ShardNameFormat, rangeShardMap.GetShards().Count());
-            DatabaseManagement.CreateDatabaseIfDoesNotExists(ShardDatabaseName);
-            SqlUtils.ExecuteSqlScript(Constants.serverName, ShardDatabaseName, Constants.ShardInitializationScriptPath);
-            ShardLocation shardLocation = new ShardLocation(Constants.serverName, ShardDatabaseName);
+            
+            ShardLocation shardLocation = new ShardLocation(Constants.serverName, shardDbName);
             if (rangeShardMap.TryGetShard(shardLocation, out Shard shard))
             {
                 logger.Info("shard is already added to shardMap");
@@ -49,10 +46,41 @@ namespace ElasticScaleDemo.Dao
             return shard;
         }
 
-        public static Shard CreateListShard(ListShardMap<int> listShardMap)
+        public static Shard MapPointToShard(ListShardMap<int> listShardMap, int point, string shardDbName)
         {
-            // TODO : return the list shard
-            return null;
+            if(listShardMap.TryGetMappingForKey(point, out PointMapping<int> pointMapping))
+            {
+                logger.Info("mapping already exists");
+                return pointMapping.Shard;
+            }
+
+            logger.Info("mapping does not exists for the shard, hence creating one");
+
+            ShardLocation shardLocation = new ShardLocation(Constants.serverName, shardDbName);
+            if (listShardMap.TryGetShard(shardLocation, out Shard shard))
+            {
+                logger.Info("shard is already added to shardMap");
+            }
+            else
+            {
+                logger.Info("shard is not added to shard map, hence adding");
+                shard = listShardMap.CreateShard(shardLocation);
+            }
+
+            PointMapping<int> pointMap = listShardMap.CreatePointMapping(point, shard);
+            logger.Info($"Mapped point {pointMap.Value} to shard {shard.Location.Database}");
+            return shard;
+        }
+
+        public static string CreateShardDb(ShardMap shardMap, string shardNameFormat)
+        {
+            string ShardDatabaseName = string.Format(shardNameFormat, shardMap.GetShards().Count());
+            bool dbExists = DatabaseManagement.CreateDatabaseIfDoesNotExists(ShardDatabaseName);
+            if (!dbExists)
+            {
+                SqlUtils.ExecuteSqlScript(Constants.serverName, ShardDatabaseName, Constants.ShardInitializationScriptPath);
+            }
+            return ShardDatabaseName;
         }
     }
 }

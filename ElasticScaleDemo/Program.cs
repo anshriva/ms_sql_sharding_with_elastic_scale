@@ -15,15 +15,27 @@ namespace ElasticScaleDemo
         {
             InitializeLogger();
             DemoRangeShards();
+            //DemoListShards();
         }
 
 
         private static void DemoListShards()
         {
-            DatabaseManagement.CreateDatabaseIfDoesNotExists(Constants.RangeShardMapManagerDatabaseName);
+            DatabaseManagement.CreateDatabaseIfDoesNotExists(Constants.ListShardMapManagerDatabaseName);
             ShardMapManager shardMapManager = ShardMapManagerManagement.CreateShardMapManagerIfDoesNotExists(Constants.ListShardMapManagerDatabaseName);
             ListShardMap<int> listShardMap = ShardMapManagement.CreateOrGetListShardMap(shardMapManager, Constants.ListShardMapName);
             SchemaManagement.CreateSchemaInfo(shardMapManager, listShardMap.Name);
+            string shard1 = ShardManagement.CreateShardDb(listShardMap, Constants.ListShardNameFormat);
+            string shard2 = ShardManagement.CreateShardDb(listShardMap, Constants.ListShardNameFormat);
+            
+            ShardManagement.MapPointToShard(listShardMap, 1, shard1);
+            ShardManagement.MapPointToShard(listShardMap, 2, shard2);
+
+
+            Client.AddStudent(1, "Anubhav", listShardMap, SqlUtils.GetCredentialConnectionString());
+            Client.AddStudent(2, "Anubhav", listShardMap, SqlUtils.GetCredentialConnectionString());
+
+            Client.PrintStudents(0, 20, listShardMap, SqlUtils.GetCredentialConnectionString());
 
         }
 
@@ -33,10 +45,16 @@ namespace ElasticScaleDemo
             ShardMapManager shardMapManager = ShardMapManagerManagement.CreateShardMapManagerIfDoesNotExists(Constants.RangeShardMapManagerDatabaseName);
             RangeShardMap<int> rangeShardMap = ShardMapManagement.CreateOrGetRangeShardMap(shardMapManager, Constants.RangeShardMapName);
             SchemaManagement.CreateSchemaInfo(shardMapManager, rangeShardMap.Name);
-            ShardManagement.CreateRangeShard(rangeShardMap, new Range<int>(0, 10));
-            ShardManagement.CreateRangeShard(rangeShardMap, new Range<int>(10, 20));
+
+            string shard1 = ShardManagement.CreateShardDb(rangeShardMap, Constants.RangeShardNameFormat);
+            string shard2 = ShardManagement.CreateShardDb(rangeShardMap, Constants.RangeShardNameFormat);
+
+            ShardManagement.MapRangeToShard(rangeShardMap, new Range<int>(0, 10), shard1);
+            ShardManagement.MapRangeToShard(rangeShardMap, new Range<int>(10, 20), shard2);
 
             Client.AddStudent(9, "Anubhav", rangeShardMap, SqlUtils.GetCredentialConnectionString());
+            Client.AddStudent(20, "Anubhav", rangeShardMap, SqlUtils.GetCredentialConnectionString());
+
             Client.PrintStudents(0, 20, rangeShardMap, SqlUtils.GetCredentialConnectionString());
         }
       
